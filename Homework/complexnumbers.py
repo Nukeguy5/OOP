@@ -13,14 +13,27 @@ class ComplexNumber:
         self.i -= d
         
     def multiply(self, c, d):
-        self.r = self.r*c - self.i*d
-        self.i = self.r*d + self.i*c
+        a = self.r*c - self.i*d
+        b = self.r*d + self.i*c
+        self.r = a
+        self.i = b
 
     def divide(self, c, d):
-        self.r = self.r*c + self.i*d 
-        self.i = -self.r*d + self.i*c  
+        self.multiply(c, -d) 
 
-        c = c**2 - d**2
+        c = c**2 + d**2
 
         self.r = self.r/c
         self.i = self.i/c
+
+if __name__ == "__main__":
+    c = ComplexNumber(2, 1)
+    print(c.r, c.i)
+    c.add(5, 1)
+    print(c.r, c.i)
+    c.subtract(5, 1)
+    print(c.r, c.i)
+    c.multiply(5, 1)
+    print(c.r, c.i)
+    c.divide(5, 1)
+    print(c.r, c.i)
