@@ -20,11 +20,10 @@ class ComplexNumber:
 
     def divide(self, c, d):
         self.multiply(c, -d) 
-
         c = c**2 + d**2
-
         self.r = self.r/c
         self.i = self.i/c
+
 
 if __name__ == "__main__":
     c = ComplexNumber(2, 1)
