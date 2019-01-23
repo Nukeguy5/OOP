@@ -4,23 +4,23 @@ class ComplexNumber:
         self.r = real
         self.i = imaginary
 
-    def add(self, c, d):
-        self.r += c
-        self.i += d
+    def add(self, real, imaginary):
+        self.r += real
+        self.i += imaginary
 
-    def subtract(self, c, d):
-        self.r -= c
-        self.i -= d
+    def subtract(self, real, imaginary):
+        self.r -= real
+        self.i -= imaginary
         
-    def multiply(self, c, d):
-        a = self.r*c - self.i*d
-        b = self.r*d + self.i*c
+    def multiply(self, real, imaginary):
+        a = self.r*real - self.i*imaginary
+        b = self.r*imaginary + self.i*real
         self.r = a
         self.i = b
 
-    def divide(self, c, d):
-        self.multiply(c, -d) 
-        c = c**2 + d**2
+    def divide(self, real, imaginary):
+        self.multiply(real, -imaginary) 
+        c = real**2 + imaginary**2
         self.r = self.r/c
         self.i = self.i/c
 
