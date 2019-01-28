@@ -27,12 +27,18 @@ class ComplexNumber:
 
 if __name__ == "__main__":
     c = ComplexNumber(2, 1)
-    print(c.r, c.i)
+    print(f"Starting Complex Number: {c.r} + {c.i}i\n")
+    real = 5
+    imaginary = 1
+    print(f"Adding: {real} + {imaginary}i")
     c.add(5, 1)
-    print(c.r, c.i)
+    print(f"New Complex Number: {c.r} + {c.i}i\n")
+    print(f"Subtracting: {real} + {imaginary}i")
     c.subtract(5, 1)
-    print(c.r, c.i)
+    print(f"New Complex Number: {c.r} + {c.i}i\n")
+    print(f"Multiplying: {real} + {imaginary}i")
     c.multiply(5, 1)
-    print(c.r, c.i)
+    print(f"New Complex Number: {c.r} + {c.i}i\n")
+    print(f"Dividing: {real} + {imaginary}i")
     c.divide(5, 1)
-    print(c.r, c.i)
+    print(f"New Complex Number: {c.r} + {c.i}i")
