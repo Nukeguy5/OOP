@@ -2,47 +2,73 @@
 import time as t
 
 class Clock:
-    TYPE = "Clock"
-
-    def __init__(self):
+    def __init__(self, clock_type):
         self.time = t.localtime()
+        self.clock_type = clock_type
 
-    def show_time(self):
-        for _ in range(len(1)):
-            self.time = t.localtime()
-            print(self.time)
+    def print_time(self):
+        for _ in range(3):
+            self.time = t.ctime()
+            print("Time:", self.time)
             t.sleep(1)
+    
+    def show_time(self):
+        print("Type:", self.clock_type)
+        self.print_time()
+        print()
+
 
 class Sundial(Clock):
-
-    def print_type(self):
-        print("Sundial")
-        self.show_time()
+    def __init__(self):
+        Clock.__init__(self, "Sundial")
+    
 
 class Mechanical(Clock):
-    TYPE = "Mechanical"
+    def __init__(self, sub_type=None, sound='tick...tock...'):
+        Clock.__init__(self, "Mechanical")
+        self.sub_type = sub_type
+        self.sound = sound
 
-    def print_type(self):
-        print("Mechanical")
-        self.show_time()
+    def show_time(self):
+        print(self.clock_type)
+        if self.sub_type is not None:
+            print("Type:", self.sub_type)
+        self.print_time()
+        print(self.sound)
+        print()
+
 
 class Cuckoo(Mechanical):
-    TYPE = "Cuckoo"
+    def __init__(self):
+        Mechanical.__init__(self, "Cukoo", "Cukoo! Cukoo!")
 
 
 class Grandfather(Mechanical):
-    TYPE = "Grandfather"
+    def __init__(self):
+        Mechanical.__init__(self, "Grandfather", "DONG... DONG... DONG...")
 
 
 class Digital(Clock):
-    TYPE = "Digital"
+    def __init__(self):
+        Clock.__init__(self, "Digital")
 
 
 class Atomic(Clock):
-    TYPE = "Atomic"
+    def __init__(self):
+        Clock.__init__(self, "Atomic")
 
 
 if __name__ == "__main__":
-    Sundial.print_type()
-    Mechanical.print_type()
+    s = Sundial()
+    m = Mechanical()
+    c = Cuckoo()
+    g = Grandfather()
+    d = Digital()
+    a = Atomic()
 
+    s.show_time()
+    m.show_time()
+    c.show_time()
+    g.show_time()
+    d.show_time()
+    a.show_time()
