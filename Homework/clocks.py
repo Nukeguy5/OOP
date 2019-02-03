@@ -7,10 +7,8 @@ class Clock:
         self.clock_type = clock_type
 
     def print_time(self):
-        for _ in range(3):
-            self.time = t.ctime()
-            print("Time:", self.time)
-            t.sleep(1)
+        self.time = t.ctime()
+        print("Time:", self.time)
     
     def show_time(self):
         print("Type:", self.clock_type)
@@ -34,7 +32,7 @@ class Mechanical(Clock):
         if self.sub_type is not None:
             print("Type:", self.sub_type)
         self.print_time()
-        print(self.sound)
+        print("Sound:", self.sound)
         print()
 
 
