@@ -30,6 +30,23 @@ class UIFrame(UIElement):
 		uiElement._Place(self.frame, color, push=side)
 		self.list.append(uiElement)
 
+	def __str__(self, tab=0):
+		r = "Frame\n"
+		for i in self.list:
+			if tab > 0:
+				for j in range(tab):
+					r += '\t'
+			if isinstance(i, UIFrame):
+				r += i.__str__(tab=tab+1)
+				continue
+			r += str(i) + '\n'
+		return r
+
+	def __iadd__(self, uiElement):
+		if issubclass(type(uiElement), UIElement):
+			self.Add(uiElement)
+			return self
+		return NotImplemented
 
 class UILabel(UIElement, M_Text):
 	def __init__(self, text=''):
@@ -38,6 +55,9 @@ class UILabel(UIElement, M_Text):
 	def _Place(self, frame, color, push=TOP, text_font='Helvetica'):
 		self.label = Label(frame, font=text_font, bg=color, textvariable = self.text)
 		self.label.pack(side=push)
+
+	def __str__(self):
+		return "Label: " + self.text.get()
 
 
 class UIButton(UIElement, M_Text):
@@ -52,3 +72,6 @@ class UIButton(UIElement, M_Text):
 		
 	def _Command(self):
 		self.action(self.data)
+
+	def __str__(self):
+		return "Button: " + self.text.get()
