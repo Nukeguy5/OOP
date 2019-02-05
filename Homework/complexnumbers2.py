@@ -27,40 +27,53 @@ class ComplexNumber:
             return NotImplemented
 
     def __add__(self, complex_num):
+        return self.__radd__(complex_num)
+
+    def __radd__(self, complex_num):
         try:
             real, imaginary = self._get_nums(complex_num)
             r = self.r + real
             i = self.i + imaginary
             return ComplexNumber(r, i)
         except TypeError:
-            print("Error: Operation used on object that is not list or ComplexNumber")
-
-    def __radd__(self, complex_num):
-        real, imaginary = self._get_nums(complex_num)
-        pass
+            return "Error: Operation used on object that is not list or ComplexNumber"
 
     def __sub__(self, complex_num):
-        real, imaginary = self._get_nums(complex_num)
-        self.r -= real
-        self.i -= imaginary
-        
+        try:
+            real, imaginary = self._get_nums(complex_num)
+            r = self.r - real
+            i = self.i - imaginary
+            return ComplexNumber(r, i)
+        except TypeError:
+            return "Error: Operation used on object that is not list or ComplexNumber"
+
     def __mul__(self, complex_num):
-        real, imaginary = self._get_nums(complex_num)
-        a = self.r*real - self.i*imaginary
-        b = self.r*imaginary + self.i*real
-        self.r = a
-        self.i = b
+        try:
+            real, imaginary = self._get_nums(complex_num)
+            a = self.r*real - self.i*imaginary
+            b = self.r*imaginary + self.i*real
+            r = a
+            i = b
+            return ComplexNumber(r, i)
+        except TypeError:
+            return "Error: Operation used on object that is not list or ComplexNumber"
 
     def __floordiv__(self, complex_num):
-        real, imaginary = self._get_nums(complex_num)
-        pass
+        cnum = self.__truediv__(complex_num)
+        cnum.r = int(cnum.r)
+        cnum.i = int(cnum.i)
+        return cnum
 
     def __truediv__(self, complex_num):
-        real, imaginary = self._get_nums(complex_num)
-        self.__mul__([real, -imaginary]) 
-        c = real**2 + imaginary**2
-        self.r = self.r/c
-        self.i = self.i/c
+        try:
+            real, imaginary = self._get_nums(complex_num)
+            cnum = self.__mul__([real, -imaginary]) 
+            c = real**2 + imaginary**2
+            r = cnum.r/c
+            i = cnum.i/c
+            return ComplexNumber(r, i)
+        except TypeError:
+            return "Error: Operation used on object that is not list or ComplexNumber"
 
     def __str__(self):
         if self.i > 0:
@@ -74,7 +87,18 @@ class ComplexNumber:
 if __name__ == "__main__":
     c1 = ComplexNumber(1,2)
     c2 = ComplexNumber(3,4)
-    c3 = [3,5,6]
-    c4 = c1 + c2
-    c5 = c1 + c3
+    c3 = [3,5]
+    c4 = c1 * c2
+    c5 = [1,2,3]
+ 
+    print(c1)
+    print(c1 + c3)
+    print(c3 + c1)
+    print(c1 - c3)
     print(c4)
+    print(c4/c2)
+    print(c4//c2)
+    print(c5 + c1)
+    print(c1 - c5)
+    print(c1 * c5)
+    print(c1/c5)
