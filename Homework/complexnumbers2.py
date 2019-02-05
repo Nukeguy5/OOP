@@ -39,6 +39,9 @@ class ComplexNumber:
             return "Error: Operation used on object that is not list or ComplexNumber"
 
     def __sub__(self, complex_num):
+        return self.__rsub__(complex_num)
+
+    def __rsub__(self, complex_num):
         try:
             real, imaginary = self._get_nums(complex_num)
             r = self.r - real
@@ -95,6 +98,7 @@ if __name__ == "__main__":
     print(c1 + c3)
     print(c3 + c1)
     print(c1 - c3)
+    print(c3 - c1)
     print(c4)
     print(c4/c2)
     print(c4//c2)
