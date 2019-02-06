@@ -1,4 +1,6 @@
 
+import math
+
 class ComplexNumber:
     def __init__(self, real, imaginary):
         self.r = real
@@ -23,8 +25,7 @@ class ComplexNumber:
             real = complex_num.r
             imaginary = complex_num.i
             return real, imaginary
-        else:
-            return NotImplemented
+        raise TypeError
 
     def __add__(self, complex_num):
         return self.__radd__(complex_num)
@@ -78,6 +79,9 @@ class ComplexNumber:
         except TypeError:
             return "Error: Operation used on object that is not list or ComplexNumber"
 
+    def __eq__(self, complex_num):
+        pass
+
     def __str__(self):
         if self.i > 0:
             return f'{self.r} + {self.i}i'
@@ -86,23 +90,21 @@ class ComplexNumber:
         else:
             return f'{self.r}'
 
+    def __getitem__(self, key):
+        if type(key) == int or type(key) == float:
+            if key < -2 or key > 1 or key != math.floor(key):
+                raise IndexError
+            elif key == 0 or key == -2:
+                return self.r
+            return self.i
+        elif type(key) == str:
+            key = key.lower()
+            if key == 'r' or key == 'real':
+                return self.r
+            elif key == 'i' or key == 'imaginary':
+                return self.i
+            raise KeyError
+        raise TypeError
 
 if __name__ == "__main__":
-    c1 = ComplexNumber(1,2)
-    c2 = ComplexNumber(3,4)
-    c3 = [3,5]
-    c4 = c1 * c2
-    c5 = [1,2,3]
- 
-    print(c1)
-    print(c1 + c3)
-    print(c3 + c1)
-    print(c1 - c3)
-    print(c3 - c1)
-    print(c4)
-    print(c4/c2)
-    print(c4//c2)
-    print(c5 + c1)
-    print(c1 - c5)
-    print(c1 * c5)
-    print(c1/c5)
+    pass
