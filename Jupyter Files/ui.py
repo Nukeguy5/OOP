@@ -1,5 +1,5 @@
-
-from tkinter import *
+from tkinter import *  # @UnusedWildImport
+import math
 
 
 class UIElement:
@@ -9,37 +9,61 @@ class UIElement:
 class M_Text:
 	def SetText(self, text):
 		self.text.set(text)
-	
+
 	def __init__(self, text):
 		self.text = StringVar()
 		self.SetText(text)
 
 
-class UIFrame(UIElement):
-	def __init__(self, root=None, bd=1):
-		self.list = []
-		if root != None:
-			self.root = root
-			self._Place(root, border=bd)
+class I_Frame:
+	def __init__(self, frame, forward=True):
+		self.frame = frame
+		self.forward = forward
+		if self.forward:
+			self.index = 0
+		else:
+			self.index = len(self.frame) - 1
 
-	def _Place(self, frame, push=TOP, border=0):
-		self.frame = Frame(frame, bd=border)
+	def __iter__(self):
+		return self
+
+	def __next__(self):
+		if self.index >= len(self.frame) or self.index < 0:
+			raise StopIteration
+		index = self.index
+		if self.forward:
+			self.index += 1
+		else:
+			self.index -= 1
+		return self.frame[index]
+
+
+class UIFrame(UIElement):
+	def __init__(self, root=None):
+		self.list = []
+		if (root != None):
+			self.root = root
+			self._Place(root)
+
+	def _Place(self, frame, push=TOP):
+		self.frame = Frame(frame, bd=4, relief=SUNKEN)
 		self.frame.pack(side=push)
-	
-	def Add(self, uiElement, side=TOP, color='white'):
-		uiElement._Place(self.frame, color, push=side)
+
+	def Add(self, uiElement, side=TOP):
+		uiElement._Place(self.frame, push=side)
 		self.list.append(uiElement)
 
 	def __str__(self, tab=0):
 		r = "Frame\n"
 		for i in self.list:
-			if tab > 0:
+			if (tab > 0):
 				for j in range(tab):
-					r += '\t'
+					r += "  "
+			r += "  "
 			if isinstance(i, UIFrame):
 				r += i.__str__(tab=tab+1)
 				continue
-			r += str(i) + '\n'
+			r += str(i) + "\n"
 		return r
 
 	def __iadd__(self, uiElement):
@@ -48,12 +72,30 @@ class UIFrame(UIElement):
 			return self
 		return NotImplemented
 
+	def __len__(self):
+		return len(self.list)
+
+	def __getitem__(self, key):
+		if isinstance(key, int) or isinstance(key, float):
+			if key < -len(self.list) or key >= len(self.list) or key != math.floor(key):
+				raise IndexError
+			return self.list[key]
+		raise TypeError
+
+	def __iter__(self):
+		print("used iterator")
+		return I_Frame(self)
+
+	def __reversed__(self):
+		return I_Frame(self, False)
+
+
 class UILabel(UIElement, M_Text):
 	def __init__(self, text=''):
 		M_Text.__init__(self, text)
-		
-	def _Place(self, frame, color, push=TOP, text_font='Helvetica'):
-		self.label = Label(frame, font=text_font, bg=color, textvariable = self.text)
+
+	def _Place(self, frame, push=TOP):
+		self.label = Label(frame, textvariable=self.text)
 		self.label.pack(side=push)
 
 	def __str__(self):
@@ -61,15 +103,15 @@ class UILabel(UIElement, M_Text):
 
 
 class UIButton(UIElement, M_Text):
-	def __init__(self, action, data = None, text = ''):
+	def __init__(self, action, data=None, text=''):
 		M_Text.__init__(self, text)
 		self.action = action
 		self.data = data
-		
-	def _Place(self, frame, color, push=TOP, text_font='Helvetica'):
-		self.button = Button(frame, font=text_font, fg=color, textvariable = self.text, command = self._Command)
+
+	def _Place(self, frame, push=TOP):
+		self.button = Button(frame, textvariable=self.text, command=self._Command)
 		self.button.pack(side=push)
-		
+
 	def _Command(self):
 		self.action(self.data)
 
