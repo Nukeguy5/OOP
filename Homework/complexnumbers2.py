@@ -3,14 +3,25 @@ import math
 
 class ComplexNumIter:
     """Iterator class for ComplexNumber implementation."""
-    def __init__(self, max=0):
-        pass
+    def __init__(self, complex_num, forward=True):
+        self.complex_num = complex_num
+        self.forward = forward
+        if self.forward:
+            self.index = 0
+            self.dir = 1
+        else:
+            self.index = 1
+            self.dir = -1
 
     def __iter__(self):
-        pass
+        return self
 
     def __next__(self):
-        pass
+        if self.index > 1 or self.index < 0:
+            raise StopIteration
+        result = self.complex_num[self.index]
+        self.index += self.dir
+        return result
 
 
 class ComplexNumber:
@@ -120,12 +131,39 @@ class ComplexNumber:
                 return self.i
             raise KeyError
         raise TypeError
+    
+    def __setitem__(self, key, value):
+        if type(key) == int or type(key) == float:
+            if key < -2 or key > 1 or key != math.floor(key):
+                raise IndexError
+            elif key == 0:
+                self.r = value
+            elif key == 1:
+                self.i == value
+            return
+        elif type(key) == str:
+            key = key.lower()
+            if key == 'r' or key == 'real':
+                self.r = value
+            elif key == 'i' or key == 'imaginary':
+                self.i = value
+            else:
+                raise KeyError
+            return
+        raise TypeError
+
+    def __contains__(self, key):
+        pass
+
+    def __len__(self):
+        return 2
 
     def __iter__(self):
-        pass
+        return ComplexNumIter(self)
 
     def __reversed__(self):
-        pass
+        return ComplexNumIter(self, False)
+
 
 if __name__ == "__main__":
     pass
