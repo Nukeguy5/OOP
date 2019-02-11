@@ -1,6 +1,18 @@
 
 import math
 
+class ComplexNumIter:
+    """Iterator class for ComplexNumber implementation."""
+    def __init__(self, max=0):
+        pass
+
+    def __iter__(self):
+        pass
+
+    def __next__(self):
+        pass
+
+
 class ComplexNumber:
     def __init__(self, real, imaginary):
         self.r = real
