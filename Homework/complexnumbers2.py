@@ -159,7 +159,7 @@ class ComplexNumber:
             return False
         elif type(key) == str:
             key = key.lower()
-            if key == 'r' or key == 'i':
+            if key == 'r' or key == 'real' or key == 'i' or key == 'imaginary':
                 return True
             return False
         return TypeError
