@@ -153,7 +153,16 @@ class ComplexNumber:
         raise TypeError
 
     def __contains__(self, key):
-        pass
+        if type(key) == int or type(key) == float:
+            if key == self.r or key == self.i:
+                return True
+            return False
+        elif type(key) == str:
+            key = key.lower()
+            if key == 'r' or key == 'i':
+                return True
+            return False
+        return TypeError
 
     def __len__(self):
         return 2
