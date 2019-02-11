@@ -12,7 +12,7 @@ class ComplexNumber:
         return False
 
     def _is_list(self, obj):
-        if (type(obj) == list or type(obj) == tuple) and (len(obj) == 2) and self._num_check :
+        if (type(obj) == list or type(obj) == tuple) and (len(obj) == 2) and self._num_check:
             return True
         return False
 
@@ -80,7 +80,10 @@ class ComplexNumber:
             return "Error: Operation used on object that is not list or ComplexNumber"
 
     def __eq__(self, complex_num):
-        pass
+        real, imaginary = self._is_list(complex_num)
+        if real == self.r and imaginary == self.i:
+            return True
+        return False
 
     def __str__(self):
         if self.i > 0:
@@ -105,6 +108,12 @@ class ComplexNumber:
                 return self.i
             raise KeyError
         raise TypeError
+
+    def __iter__(self):
+        pass
+
+    def __reversed__(self):
+        pass
 
 if __name__ == "__main__":
     pass
