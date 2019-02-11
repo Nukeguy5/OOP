@@ -3,7 +3,8 @@ import math
 
 
 class UIElement:
-	pass
+	def __init__(self, name=None):
+		self.name = name
 
 
 class M_Text:
@@ -39,7 +40,8 @@ class I_Frame:
 
 
 class UIFrame(UIElement):
-	def __init__(self, root=None):
+	def __init__(self, root=None, name=None):
+		UIElement.__init__(self, name=name)
 		self.list = []
 		if (root != None):
 			self.root = root
@@ -91,7 +93,8 @@ class UIFrame(UIElement):
 
 
 class UILabel(UIElement, M_Text):
-	def __init__(self, text=''):
+	def __init__(self, text='', name=None):
+		UIElement.__init__(self, name=name)
 		M_Text.__init__(self, text)
 
 	def _Place(self, frame, push=TOP):
@@ -103,7 +106,8 @@ class UILabel(UIElement, M_Text):
 
 
 class UIButton(UIElement, M_Text):
-	def __init__(self, action, data=None, text=''):
+	def __init__(self, action, data=None, text='', name=None):
+		UIElement.__init__(self, name=name)
 		M_Text.__init__(self, text)
 		self.action = action
 		self.data = data
