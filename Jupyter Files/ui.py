@@ -76,7 +76,7 @@ class UIFrame(UIElement):
 			if i.name == name:
 				yield i
 			if isinstance(i, Frame):
-				yield from i.FindEachElementByName(name)
+				yield from i.FindEachElementByName(name)  # this will return each element rather than the whole list
 
 	def __str__(self, tab=0):
 		r = "Frame\n"
