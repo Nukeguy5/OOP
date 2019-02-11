@@ -48,7 +48,7 @@ class ComplexNumber:
             real = complex_num.r
             imaginary = complex_num.i
             return real, imaginary
-        raise TypeError
+        return NotImplemented
 
     def __add__(self, complex_num):
         return self.__radd__(complex_num)
