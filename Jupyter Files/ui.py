@@ -70,6 +70,14 @@ class UIFrame(UIElement):
 				lst.extend(uiElements)
 		return lst
 
+	# generator style
+	def FindEachElementByName(self, name):
+		for i in self.list:
+			if i.name == name:
+				yield i
+			if isinstance(i, Frame):
+				yield from i.FindEachElementByName(name)
+
 	def __str__(self, tab=0):
 		r = "Frame\n"
 		for i in self.list:
