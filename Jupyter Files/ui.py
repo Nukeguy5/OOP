@@ -55,6 +55,10 @@ class UIFrame(UIElement):
 		uiElement._Place(self.frame, push=side)
 		self.list.append(uiElement)
 
+	# check only current frame and members and returns a list
+	def FindFrameElementByName(self, name):
+		return [uiEl for uiEl in self.list if uiEl.name == name]
+
 	def __str__(self, tab=0):
 		r = "Frame\n"
 		for i in self.list:
