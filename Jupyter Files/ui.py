@@ -56,8 +56,19 @@ class UIFrame(UIElement):
 		self.list.append(uiElement)
 
 	# check only current frame and members and returns a list
-	def FindFrameElementByName(self, name):
+	def FindFrameElementsByName(self, name):
 		return [uiEl for uiEl in self.list if uiEl.name == name]
+
+	# recursively check and returns a list
+	def FindElementsByName(self, name):
+		lst = []
+		for i in self.list:
+			if name == i.name:
+				lst.append(i)
+			if isinstance(i, UIFrame):
+				uiElements = i.FindFrameElementsByName(name)
+				lst.extend(uiElements)
+		return lst
 
 	def __str__(self, tab=0):
 		r = "Frame\n"
