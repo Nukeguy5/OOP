@@ -116,12 +116,16 @@ class UIFrame(UIElement):
 
 
 class UILabel(UIElement, M_Text):
-	def __init__(self, text='', name=None):
+	def __init__(self, text='', name=None, **kwargs):
 		UIElement.__init__(self, name=name)
 		M_Text.__init__(self, text)
+		kwargs.pop("textvariable", None)
+		self.kwargs = kwargs
 
-	def _Place(self, frame, push=TOP):
-		self.label = Label(frame, textvariable=self.text)
+	def _Place(self, frame, push=TOP, **kwargs):
+		kwargs.pop("textvariable", None)
+		self.kwargs.update(kwargs)
+		self.label = Label(frame, textvariable=self.text, **self.kwargs)
 		self.label.pack(side=push)
 
 	def __str__(self):
@@ -129,13 +133,19 @@ class UILabel(UIElement, M_Text):
 
 
 class UIButton(UIElement, M_Text):
-	def __init__(self, action, data=None, text='', name=None):
+	def __init__(self, action, data=None, text='', name=None, **kwargs):
 		UIElement.__init__(self, name=name)
 		M_Text.__init__(self, text)
+		kwargs.pop("textvariable", None)
+		kwargs.pop("command", None)
 		self.action = action
 		self.data = data
+		self.kwargs = kwargs
 
-	def _Place(self, frame, push=TOP):
+	def _Place(self, frame, push=TOP, **kwargs):
+		kwargs.pop("textvariable", None)
+		kwargs.pop("command", None)
+		self.kwargs.update(kwargs)
 		self.button = Button(frame, textvariable=self.text, command=self._Command)
 		self.button.pack(side=push)
 
