@@ -57,6 +57,7 @@ class UIFrame(UIElement):
 		uiElement._Place(self.frame, push=side, **kwargs)
 		self.list.append(uiElement)
 		uiElement.owner = self
+		uiElement.side = side
 
 	# check only current frame and members and returns a list
 	def FindFrameElementsByName(self, name):
