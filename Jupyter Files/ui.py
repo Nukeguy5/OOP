@@ -40,20 +40,23 @@ class I_Frame:
 
 
 class UIFrame(UIElement):
-	def __init__(self, root=None, name=None):
+	def __init__(self, root=None, name=None, **kwargs):
 		UIElement.__init__(self, name=name)
+		self.kwargs = kwargs
 		self.list = []
 		if (root != None):
 			self.root = root
 			self._Place(root)
 
-	def _Place(self, frame, push=TOP):
+	def _Place(self, frame, push=TOP, **kwargs):
+		self.kwargs.update(kwargs)
 		self.frame = Frame(frame, bd=4, relief=SUNKEN)
 		self.frame.pack(side=push)
 
-	def Add(self, uiElement, side=TOP):
-		uiElement._Place(self.frame, push=side)
+	def Add(self, uiElement, side=TOP, **kwargs):
+		uiElement._Place(self.frame, push=side, **kwargs)
 		self.list.append(uiElement)
+		uiElement.owner = self
 
 	# check only current frame and members and returns a list
 	def FindFrameElementsByName(self, name):
