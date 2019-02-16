@@ -19,7 +19,7 @@
 #     except TypeError:
 #         return False
         
-def for_loop_is_sorted(*lst):
+def is_sorted(*lst):
     if type(lst[0]) == list:
         gen = (i for i in lst[0])
     else:
@@ -33,7 +33,5 @@ def for_loop_is_sorted(*lst):
 
 my_list = [i for i in range(10)]
 my_list2 = [1, 2, 10, 3, 4]
-# print(is_sorted(my_list))
-# print(is_sorted(my_list2))
-print(for_loop_is_sorted(my_list))
-print(for_loop_is_sorted(my_list2))
+print(is_sorted(my_list))
+print(is_sorted(my_list2))
