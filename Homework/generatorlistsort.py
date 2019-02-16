@@ -1,4 +1,5 @@
 
+## For personal record of first success
 # def is_sorted(*lst):
 #     if type(lst[0]) == list:
 #         gen = (i for i in lst[0])
