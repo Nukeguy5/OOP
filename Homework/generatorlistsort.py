@@ -22,7 +22,7 @@
 
 class List:
     def __init__(self, *args):
-        self.gen = (i for i in args)
+        self.gen = (i for i in args)  # creates generator object
        
     def is_sorted(self):
         curr = next(self.gen)
