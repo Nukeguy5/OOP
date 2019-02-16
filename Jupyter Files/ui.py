@@ -50,7 +50,7 @@ class UIFrame(UIElement):
 
 	def _Place(self, frame, push=TOP, **kwargs):
 		self.kwargs.update(kwargs)
-		self.frame = Frame(frame, bd=4, relief=SUNKEN)
+		self.frame = Frame(frame, **self.kwargs)
 		self.frame.pack(side=push)
 
 	def Add(self, uiElement, side=TOP, **kwargs):
@@ -149,18 +149,23 @@ class UIButton(UIElement, M_Text):
 	def CopySelf(self, action=None, data=None, text=None, name=None, addToSameFrame=False, **override_args):
 		newAction = action if action is not None else self.action
 		newData = data if data is not None else self.data
-		newText = text if text is not None else self.text
+		newText = text if text is not None else self.text.get()
 		newName = name if name is not None else self.name
+		myCopy = UIButton(action=newAction, data=newData, text=newText, name=newName, **self.kwargs)
 		override_args.pop("command", None)
 		override_args.pop("textvariable", None)
-		myCopy = UIButton(action=newAction, data=newData, text=newText, name=newName, **override_args)
+		myCopy.kwargs.update(override_args)
+
+		if addToSameFrame:
+			self.owner.Add(myCopy, self.side)
+
 		return myCopy
 
 	def _Place(self, frame, push=TOP, **kwargs):
 		kwargs.pop("textvariable", None)
 		kwargs.pop("command", None)
 		self.kwargs.update(kwargs)
-		self.button = Button(frame, textvariable=self.text, command=self._Command)
+		self.button = Button(frame, **self.kwargs)
 		self.button.pack(side=push)
 
 	def _Command(self):
