@@ -13,6 +13,10 @@ class ElementType(Flag):
 class UIElement:
 	def __init__(self, name=None):
 		self.name = name
+		self.type = ElementType.NONE
+
+	def GetType(self):
+		return self.type
 
 
 class M_Text:
