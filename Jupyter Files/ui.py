@@ -1,5 +1,13 @@
 from tkinter import *  # @UnusedWildImport
+from enum import Flag
 import math
+
+
+class ElementType(Flag):
+	NONE = 0
+	HAS_TEXT = 1
+	HAS_ACTION = 2
+	IS_CONTAINER = 4
 
 
 class UIElement:
