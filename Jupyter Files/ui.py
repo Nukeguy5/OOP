@@ -13,10 +13,10 @@ class ElementType(Flag):
 class UIElement:
 	def __init__(self, name=None):
 		self.name = name
-		self.type = ElementType.NONE
+		self._type = ElementType.NONE
 
 	def GetType(self):
-		return self.type
+		return self._type
 
 
 class M_Text:
@@ -54,7 +54,7 @@ class I_Frame:
 class UIFrame(UIElement):
 	def __init__(self, root=None, name=None, **kwargs):
 		UIElement.__init__(self, name=name)
-		self.type = ElementType.IS_CONTAINER
+		self._type = ElementType.IS_CONTAINER
 		self.kwargs = kwargs
 		self.list = []
 		if (root != None):
@@ -135,7 +135,7 @@ class UIFrame(UIElement):
 class UILabel(UIElement, M_Text):
 	def __init__(self, text='', name=None, **kwargs):
 		UIElement.__init__(self, name=name)
-		self.type = ElementType.HAS_TEXT
+		self._type = ElementType.HAS_TEXT
 		M_Text.__init__(self, text)
 		kwargs.pop("textvariable", None)
 		self.kwargs = kwargs
@@ -153,7 +153,7 @@ class UILabel(UIElement, M_Text):
 class UIButton(UIElement, M_Text):
 	def __init__(self, action, data=None, text='', name=None, **kwargs):
 		UIElement.__init__(self, name=name)
-		self.type = ElementType.HAS_TEXT | ElementType.HAS_ACTION
+		self._type = ElementType.HAS_TEXT | ElementType.HAS_ACTION
 		M_Text.__init__(self, text)
 		kwargs.pop("textvariable", None)
 		kwargs.pop("command", None)
@@ -164,7 +164,7 @@ class UIButton(UIElement, M_Text):
 	def CopySelf(self, action=None, data=None, text=None, name=None, addToSameFrame=False, **override_args):
 		newAction = action if action is not None else self.action
 		newData = data if data is not None else self.data
-		newText = text if text is not None else self.text.get()
+		newText = self.text.get() if text == None else text
 		newName = name if name is not None else self.name
 		myCopy = UIButton(action=newAction, data=newData, text=newText, name=newName, **self.kwargs)
 		override_args.pop("command", None)
@@ -180,7 +180,7 @@ class UIButton(UIElement, M_Text):
 		kwargs.pop("textvariable", None)
 		kwargs.pop("command", None)
 		self.kwargs.update(kwargs)
-		self.button = Button(frame, **self.kwargs)
+		self.button = Button(frame, textvariable=self.text, command=self._Command, **self.kwargs)
 		self.button.pack(side=push)
 
 	def _Command(self):
