@@ -54,6 +54,7 @@ class I_Frame:
 class UIFrame(UIElement):
 	def __init__(self, root=None, name=None, **kwargs):
 		UIElement.__init__(self, name=name)
+		self.type = ElementType.IS_CONTAINER
 		self.kwargs = kwargs
 		self.list = []
 		if (root != None):
@@ -134,6 +135,7 @@ class UIFrame(UIElement):
 class UILabel(UIElement, M_Text):
 	def __init__(self, text='', name=None, **kwargs):
 		UIElement.__init__(self, name=name)
+		self.type = ElementType.HAS_TEXT
 		M_Text.__init__(self, text)
 		kwargs.pop("textvariable", None)
 		self.kwargs = kwargs
@@ -151,6 +153,7 @@ class UILabel(UIElement, M_Text):
 class UIButton(UIElement, M_Text):
 	def __init__(self, action, data=None, text='', name=None, **kwargs):
 		UIElement.__init__(self, name=name)
+		self.type = ElementType.HAS_TEXT | ElementType.HAS_ACTION
 		M_Text.__init__(self, text)
 		kwargs.pop("textvariable", None)
 		kwargs.pop("command", None)
