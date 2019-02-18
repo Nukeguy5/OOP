@@ -157,16 +157,16 @@ class UIButton(UIElement, M_Text):
 		M_Text.__init__(self, text)
 		kwargs.pop("textvariable", None)
 		kwargs.pop("command", None)
+		self.kwargs = kwargs
 		self.action = action
 		self.data = data
-		self.kwargs = kwargs
 
 	def CopySelf(self, action=None, data=None, text=None, name=None, addToSameFrame=False, **override_args):
 		newAction = action if action is not None else self.action
 		newData = data if data is not None else self.data
 		newText = self.text.get() if text == None else text
 		newName = name if name is not None else self.name
-		myCopy = UIButton(action=newAction, data=newData, text=newText, name=newName, **self.kwargs)
+		myCopy = UIButton(newAction, data=newData, text=newText, name=newName, **self.kwargs)
 		override_args.pop("command", None)
 		override_args.pop("textvariable", None)
 		myCopy.kwargs.update(override_args)
