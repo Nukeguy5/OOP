@@ -1,5 +1,6 @@
 from tkinter import *  # @UnusedWildImport
 from enum import Flag
+from abc import ABC, abstractmethod
 import math
 
 
@@ -10,13 +11,17 @@ class ElementType(Flag):
 	IS_CONTAINER = 4
 
 
-class UIElement:
+class UIElement(ABC):
 	def __init__(self, name=None):
 		self.name = name
 		self._type = ElementType.NONE
 
 	def GetType(self):
 		return self._type
+
+	@abstractmethod
+	def __str__(self):
+		pass
 
 
 class M_Text:
