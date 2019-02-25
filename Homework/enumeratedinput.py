@@ -19,4 +19,7 @@ for i in UserEnum:
         tup = Tup(i.name, i.value)
 
 # PRINT
-print(f'name: {tup.name} value: {tup.value}')
+if tup:
+    print(f'name: {tup.name} value: {tup.value}')
+else:
+    print('Item not found...')
