@@ -9,4 +9,4 @@ def test3():
     print('This is a new test')
 
 def test4():
-    pass
+    return 'Hello World!'
