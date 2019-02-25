@@ -7,6 +7,3 @@ def test2():
 
 def test3():
     print('This is a new test')
-
-def test4():
-    return 'Hello World!'
