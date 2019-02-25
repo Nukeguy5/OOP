@@ -17,9 +17,11 @@ for i in UserEnum:
     if i.name == UserFind:
         # ASSIGN
         tup = Tup(i.name, i.value)
+    else:
+        tup = None
 
 # PRINT
-if tup == None:
+if tup is None:
     print('Item not found...')
 else:
     print(f'name: {tup.name} value: {tup.value}')
