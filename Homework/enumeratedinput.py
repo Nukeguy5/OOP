@@ -2,17 +2,21 @@
 from enum import Enum
 from collections import namedtuple
 
-names = 'BEES BIRDS BALLOONS'
+# ENUM
+UserEnum = Enum('UserIn', input('Enter Input Seperated by Spaces: '))
 
-# UserIn = Enum('UserIn', input('Enter Input: '))
-UserEnum = Enum('UserIn', names)
+# TUPLE
+Tup = namedtuple('namedTup', "name value")
 
-Tup = namedtuple('Tup', [i.name for i in UserEnum])
-
+# INPUT
 UserFind = input('Enter Name to Find: ')
 
+# FOR
 for i in UserEnum:
-    if i.name = UserFind:
-        
+    # FIND
+    if i.name == UserFind:
+        # ASSIGN
+        tup = Tup(i.name, i.value)
 
-
+# PRINT
+print(f'name: {tup.name} value: {tup.value}')
