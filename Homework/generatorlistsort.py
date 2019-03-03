@@ -25,42 +25,28 @@ from itertools import tee
 class List:
     def __init__(self, *args):
         self.gen = (i for i in args)  # creates generator object
+        self.gen1 = (i for i in args)
        
     def is_sorted(self):
-        gen = self.gen
-        curr = next(gen)
-        for i in gen:
+        curr = next(self.gen)
+        for i in self.gen:
             if curr >= i:
                 return False
             curr = i
         return True
 
-    def bubble_sort(self):
-        [None for i in self.gen]
-        lst = list(self.gen)
-        for i in range(len(lst)-1, 0, 1):
-            for j in range(len(lst)):
-                if lst[i] > lst[j]:
-                    temp = lst[j]
-                    lst[j] = lst[i]
-                    lst[i] = temp
-        self.gen = (n for n in lst)
-        return self.gen
+    def sort(self):
+        self.gen1 = (i for i in sorted(list(self.gen1)))
 
     def ensure_sorted(self):
         if self.is_sorted():
             return "List is sorted."
-        self.bubble_sort()
+        self.sort()
         print(self)
         return f'List is now sorted.'
 
-    def append(self, *items):
-        lst = list(self.gen)
-        lst += items
-        self.gen = (i for i in lst)
-
     def __str__(self):
-        return str(list(self.gen))
+        return str(list(self.gen1))
   
 
 my_list = List(1, 2, 3, 4, 5)
