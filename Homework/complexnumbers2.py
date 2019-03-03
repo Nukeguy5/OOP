@@ -63,9 +63,6 @@ class ComplexNumber:
             return "Error: Operation used on object that is not list or ComplexNumber"
 
     def __sub__(self, complex_num):
-        return self.__rsub__(complex_num)
-
-    def __rsub__(self, complex_num):
         try:
             real, imaginary = self._get_nums(complex_num)
             r = self.r - real
@@ -73,6 +70,10 @@ class ComplexNumber:
             return ComplexNumber(r, i)
         except TypeError:
             return "Error: Operation used on object that is not list or ComplexNumber"
+
+    # Cannot use because subtraction is not communative
+    # def __rsub__(self, complex_num):
+        # pass
 
     def __mul__(self, complex_num):
         try:
