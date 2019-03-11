@@ -193,3 +193,19 @@ class UIButton(UIElement, M_Text):
 
 	def __str__(self):
 		return "Button: " + self.text.get()
+
+
+def _ElementLogWrapper(cls, func):
+    def wrapper(*args, **kwargs):
+        print("Created " + cls.__name__)
+        return func(*args, **kwargs)
+    return wrapper
+
+_ElementLoggingOn = False
+def TurnOnElementCreationLogging():
+	global _ElementLoggingOn 
+	if not _ElementLoggingOn:
+		UIFrame.__init__ = _ElementLogWrapper(UIFrame, UIFrame.__init__)
+		UILabel.__init__ = _ElementLogWrapper(UILabel, UILabel.__init__)
+		UIButton.__init__ = _ElementLogWrapper(UIButton, UIButton.__init__)
+		_ElementLoggingOn = True
