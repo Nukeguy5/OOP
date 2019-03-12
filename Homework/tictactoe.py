@@ -1,4 +1,11 @@
 
+'''
+Write a Tic Tac Toe game played by only AI and only with random picks. 
+Detect win or tie. Write a decorator to detect how fast a single game is played given a seed for random generation. 
+Make sure to use only 1 random number per pick. Create another decorator to print out the Tic Tac Toe board at each 
+pick so you can see what the AI is doing.
+'''
+
 import random
 
 class TicTacToe:
