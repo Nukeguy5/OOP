@@ -10,20 +10,33 @@ pick so you can see what the AI is doing.
 
 import random
 
+def PrintBoard(game, func):
+    def wrapper(*args, **kwargs):
+        print(game)
+        return func(*args, **kwargs)
+    return wrapper
+
+def PrintGameBoard():
+    TicTacToe.__init__ = PrintBoard(TicTacToe, TicTacToe.play)
+
+def LogTime(func):
+    def wrapper(*args, **kwargs):
+        return
+    return wrapper
+
+
 class TicTacToe:
     def __init__(self):
         self.board = [[None, None, None] for _ in range(3)]
         self.players = [Player('X'), Player('O')]
 
     def place_letter(self, letter, row, col):
-        if self.board[row, col] is not None:
-            return
-        self.board[row, col] = letter
+        self.board[row][col] = letter
 
     def turn(self, player):
         letter = player.letter
         row, col = player.pick_location()
-        if self.board[row, col] is not None:
+        if self.board[row][col] is not None:
             return self.turn(player)
         self.place_letter(letter, row, col) 
 
@@ -38,13 +51,11 @@ class TicTacToe:
     def __str__(self):
         string = ''
         for i in range(len(self.board)):
-            if i == 0:
-                string += str(self.board[i])
-            else:
-                string += ' | '.join(self.board[i])
-
+            string += ' ' + ' | '.join(self.board[i])
             if i < 2:
-                string += '\n---------------'
+                string += '\n-----------\n'
+        return string
+
 
 class Player:
     def __init__(self, letter):
@@ -57,16 +68,7 @@ class Player:
         return row, col
 
 
-def LogTime(func):
-    def wrapper(*args, **kwargs):
-        return
-    return wrapper
-
-def PrintBoard(cls, var):
-    def wrapper():
-        print()
-    return wrapper
-
-game = TicTacToe()
-game.play()
-print(game)
+if __name__ == '__main__':
+    game = TicTacToe()
+    game.play()
+    # print(game)
