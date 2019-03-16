@@ -10,14 +10,29 @@ pick so you can see what the AI is doing.
 
 import random
 
-def PrintBoard(game, func):
-    def wrapper(*args, **kwargs):
-        print(game)
-        return func(*args, **kwargs)
-    return wrapper
+# def printobject(obj):
+#     """
+#     obj -> object to be printed after function call
+#     """
+#     def decorator(func):
+#         def wrapper(*args, **kwargs):    
+#             return func(*args, **kwargs)
+#         print(obj)
+#         return wrapper
 
-def PrintGameBoard():
-    TicTacToe.__init__ = PrintBoard(TicTacToe, TicTacToe.play)
+# def PrintGameBoard():
+#     TicTacToe.__init__ = PrintBoard(TicTacToe, TicTacToe.play)
+
+class printobject:
+    def __init__(self, obj):
+        self.obj = obj
+
+    def __call__(self, f):
+        def wrapper(*args, **kwargs):    
+            f(*args, **kwargs)
+            print(self.obj)
+        return wrapper
+
 
 def LogTime(func):
     def wrapper(*args, **kwargs):
@@ -27,11 +42,12 @@ def LogTime(func):
 
 class TicTacToe:
     def __init__(self):
-        self.board = [[None, None, None] for _ in range(3)]
+        self.board = [[' ', ' ', ' '] for _ in range(3)]
         self.players = [Player('X'), Player('O')]
 
     def place_letter(self, letter, row, col):
         self.board[row][col] = letter
+        # print(self)
 
     def turn(self, player):
         letter = player.letter
@@ -71,4 +87,4 @@ class Player:
 if __name__ == '__main__':
     game = TicTacToe()
     game.play()
-    # print(game)
+    print(game)
