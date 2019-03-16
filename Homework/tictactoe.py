@@ -10,18 +10,22 @@ pick so you can see what the AI is doing.
 
 import random
 import time
-# def printobject(obj):
-#     """
-#     obj -> object to be printed after function call
-#     """
-#     def decorator(func):
-#         def wrapper(*args, **kwargs):    
-#             return func(*args, **kwargs)
-#         print(obj)
-#         return wrapper
 
-# def PrintGameBoard():
-#     TicTacToe.__init__ = PrintBoard(TicTacToe, TicTacToe.play)
+def printReturnValue(func):
+    """
+    printobject(obj) -> decorator
+
+    params obj
+
+    Prints the object or attribute of the object after the function is used.
+    obj -> object
+    attr (optional) -> str
+    """
+    def wrapper(*args, **kwargs):   
+        val = func(*args, **kwargs)
+        print('\n'+str(val)+'\n')
+    return wrapper
+
 
 def logtime(func):
     def wrapper(*args, **kwargs):
@@ -31,27 +35,22 @@ def logtime(func):
     return wrapper
 
 
-class printobject:
-    def __init__(self, obj):
-        self.obj = obj
+# class printobject:
+#     def __init__(self, obj):
+#         self.obj = obj
 
-    def __call__(self, f):
-        def wrapper(*args, **kwargs):    
-            f(*args, **kwargs)
-            print(self.obj)
-        return wrapper
-
+#     def __call__(self, f):
+#         def decorator(func):
 
 class TicTacToe:
     def __init__(self):
         self.board = [[' ', ' ', ' '] for _ in range(3)]
         self.players = [Player('X'), Player('O')]
 
+    @printReturnValue
     def place_letter(self, letter, row, col):
         self.board[row][col] = letter
-        print()
-        print(self)
-        print()
+        return self
 
     def turn(self, player):
         letter = player.letter
