@@ -89,7 +89,6 @@ class TicTacToe:
 class Player:
     def __init__(self, letter):
         self.letter = letter
-        random.seed(119)
 
     def pick_location(self):
         row = random.randint(0, 2)
@@ -98,5 +97,6 @@ class Player:
 
 
 if __name__ == '__main__':
+    random.seed(119)
     game = TicTacToe()
     game.play()
