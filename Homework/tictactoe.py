@@ -9,7 +9,7 @@ pick so you can see what the AI is doing.
 '''
 
 import random
-
+import time
 # def printobject(obj):
 #     """
 #     obj -> object to be printed after function call
@@ -23,6 +23,14 @@ import random
 # def PrintGameBoard():
 #     TicTacToe.__init__ = PrintBoard(TicTacToe, TicTacToe.play)
 
+def logtime(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        func(*args, **kwargs)
+        print("Completed '{0}' in {1}ms".format(func.__name__, time.time() - start_time))
+    return wrapper
+
+
 class printobject:
     def __init__(self, obj):
         self.obj = obj
@@ -34,12 +42,6 @@ class printobject:
         return wrapper
 
 
-def LogTime(func):
-    def wrapper(*args, **kwargs):
-        return
-    return wrapper
-
-
 class TicTacToe:
     def __init__(self):
         self.board = [[' ', ' ', ' '] for _ in range(3)]
@@ -47,15 +49,30 @@ class TicTacToe:
 
     def place_letter(self, letter, row, col):
         self.board[row][col] = letter
-        # print(self)
+        print()
+        print(self)
+        print()
 
     def turn(self, player):
         letter = player.letter
         row, col = player.pick_location()
-        if self.board[row][col] is not None:
+        if self.board[row][col] is not ' ':
             return self.turn(player)
         self.place_letter(letter, row, col) 
 
+    def is_win(self, player):
+        for i in range(len(self.board)):
+            if self.board[i][0] == player.letter and self.board[i][1] == player.letter and self.board[i][2] == player.letter:
+                return True
+            elif self.board[0][i] == player.letter and self.board[1][i] == player.letter and self.board[2][i] == player.letter:
+                return True
+            elif self.board[0][0] == player.letter and self.board[1][1] == player.letter and self.board[2][2] == player.letter:
+                return True
+            elif self.board[2][0] == player.letter and self.board[1][1] == player.letter and self.board[0][2] == player.letter:
+                return True
+        return False
+
+    @logtime
     def play(self):
         for i in range(9):
             if i < 2:
@@ -63,6 +80,10 @@ class TicTacToe:
             else:
                 player = self.players[i%2]
             self.turn(player)
+
+            if self.is_win(player):
+                print(f'{player.letter} wins!')
+                break
 
     def __str__(self):
         string = ''
@@ -76,7 +97,7 @@ class TicTacToe:
 class Player:
     def __init__(self, letter):
         self.letter = letter
-        random.seed(1000)
+        random.seed(119)
 
     def pick_location(self):
         row = random.randint(0, 2)
@@ -87,4 +108,3 @@ class Player:
 if __name__ == '__main__':
     game = TicTacToe()
     game.play()
-    print(game)
