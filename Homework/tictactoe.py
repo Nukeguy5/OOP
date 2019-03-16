@@ -12,15 +12,6 @@ import random
 import time
 
 def printReturnValue(func):
-    """
-    printobject(obj) -> decorator
-
-    params obj
-
-    Prints the object or attribute of the object after the function is used.
-    obj -> object
-    attr (optional) -> str
-    """
     def wrapper(*args, **kwargs):   
         val = func(*args, **kwargs)
         print('\n'+str(val)+'\n')
