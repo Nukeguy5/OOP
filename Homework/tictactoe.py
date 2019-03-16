@@ -35,13 +35,6 @@ def logtime(func):
     return wrapper
 
 
-# class printobject:
-#     def __init__(self, obj):
-#         self.obj = obj
-
-#     def __call__(self, f):
-#         def decorator(func):
-
 class TicTacToe:
     def __init__(self):
         self.board = [[' ', ' ', ' '] for _ in range(3)]
