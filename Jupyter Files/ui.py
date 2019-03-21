@@ -1,8 +1,12 @@
 
 from tkinter import *
-from enum import Flag
+from enum import Flag, Enum
 import math
 from abc import ABC, abstractmethod
+
+class LanguageType(Enum):
+	ENGLISH = 0
+	PIGLATIN = 1
 
 class ElementType(Flag):
 	NONE = 0
@@ -11,6 +15,8 @@ class ElementType(Flag):
 	IS_CONTAINER = 4
 
 class UIElement(ABC):
+	UILanguage = LanguageType.ENGLISH
+
 	def __init__(self, name=None):
 		self.name = name
 		self.type = ElementType.NONE
@@ -24,6 +30,11 @@ class UIElement(ABC):
 
 class M_Text:
 	def SetText(self, text):
+		if isinstance(text, dict):
+			self.textList = text
+			text = ''
+			if UIElement.UILanguage in self.textList:
+				text = self.textList[UIElement.UILanguage]
 		self.text.set(text)
 		
 	def __init__(self, text):
@@ -88,12 +99,29 @@ class UIFrame(UIElement):
 		self.kwargs.update(kwargs)
 		self.frame = Frame(frame, **self.kwargs)
 		self.frame.pack(side=push)
+		
+	def _Show(self):
+		self.frame.pack(side=self.side)
+
+	def _Hide(self):
+		self.frame.pack_forget()
 	
-	def Add(self, uiElement, side=TOP, **kwargs):
+	def Add(self, uiElement, side=TOP, hide=False, **kwargs):
+		kwargs.pop("hide", None)
 		uiElement._Place(self.frame, push=side, **kwargs)
 		self.list.append(uiElement)
 		uiElement.owner = self
 		uiElement.side = side
+		if hide:
+			uiElement._Hide()
+
+	def ShowElements(self, name):
+		for i in self.FindEachElementByName(name):
+			i._Show()
+
+	def HideElements(self, name):
+		for i in self.FindEachElementByName(name):
+			i._Hide()
 		
 	#checks only current frame and members and returns a list
 	def FindFrameElementsByName(self,name):
@@ -168,6 +196,12 @@ class UILabel(UIElement, M_Text):
 		self.label = Label(frame, textvariable=self.text, **self.kwargs)
 		self.label.pack(side=push)
 		
+	def _Show(self):
+		self.label.pack(side=self.side)
+
+	def _Hide(self):
+		self.label.pack_forget()
+
 	def __str__(self):
 		return "Label: " + self.text.get() #because self.text is StringVar not string
 
@@ -202,7 +236,13 @@ class UIButton(UIElement, M_Text):
 		self.kwargs.update(kwargs)
 		self.button = Button(frame, command=self._Command, textvariable=self.text, **self.kwargs)
 		self.button.pack(side=push)
-	
+
+	def _Show(self):
+		self.button.pack()
+
+	def _Hide(self):
+		self.button.pack_forget()
+
 	def _Command(self):
 		self.action(self.data)
 		
