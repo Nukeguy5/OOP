@@ -3,29 +3,34 @@ import datetime as dt
 
 
 class DateFormat:
-    def __init__(self):
-        self.time = dt.datetime.now()
+    TIME = dt.datetime.now()
+
+    def formatTime(self):
+        pass
 
     def printTime(self):
-        pass
+        print(self.formatTime())
 
 
 class TwentyFourHour(DateFormat):
-    def printTime(self):
-        time = self.time.strftime('%H:%M:%S %m/%d/%Y')
-        print("Twenty-four hour format:", time)
+    def formatTime(self):
+        time = self.TIME.strftime('%H:%M:%S %m/%d/%Y')
+        string = f"Twenty-four hour format: {time}"
+        return string
 
 
 class MacTime(DateFormat):
-    def printTime(self):
-        time = self.time.strftime('%a %b %d  %I:%M:%S %p')
-        print("Mac time format:", time)
+    def formatTime(self):
+        time = self.TIME.strftime('%a %b %d  %I:%M:%S %p')
+        string = f"Mac time format: {time}"
+        return string
 
 
 class VerboseDate(DateFormat):
-    def printTime(self):
-        time = self.time.strftime('%I:%M:%S %p  %A %B %d, %Y')
-        print("Verbose date and time:", time)
+    def formatTime(self):
+        time = self.TIME.strftime('%I:%M:%S %p  %A %B %d, %Y')
+        string = f"Verbose date and time: {time}"
+        return string
 
 
 if __name__ == "__main__":
