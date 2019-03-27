@@ -40,7 +40,8 @@ class M_Text:
 	def __init__(self, text):
 		self.text = StringVar()
 		self.SetText(text)
-		
+		self.type = ElementType.HAS_TEXT
+
 class I_Frame:
 	def __init__(self, frame, forward=True):
 		self.frame = frame
@@ -73,7 +74,7 @@ class UIFrame(UIElement):
 			cls.keylist.append(e.char)
 			if e.char == '\r':
 				for i in cls.enterList:
-					i._Command()
+					i._EnterPressed()
 
 	@classmethod
 	def _Up(cls, e):
@@ -92,12 +93,13 @@ class UIFrame(UIElement):
 		if (root != None):
 			self.root = root
 			self._Place(root)
-			root.bind('<KeyPress>', UIFrame._Down)
-			root.bind('<KeyRelease>', UIFrame._Up)
+			# root.bind('<KeyPress>', UIFrame._Down)
+			# root.bind('<KeyRelease>', UIFrame._Up)
 	
 	def _Place(self, frame, push=TOP, **kwargs):
 		self.kwargs.update(kwargs)
 		self.frame = Frame(frame, **self.kwargs)
+		self.side = push
 		self.frame.pack(side=push)
 		
 	def _Show(self):
@@ -181,11 +183,26 @@ class UIFrame(UIElement):
 	def __reversed__(self):
 		return I_Frame(self, False)
 		
+class UIRoot(UIFrame):
+	_singleton = None
+
+	def __new__(cls, *args, **kwargs):
+		if not cls._singleton:
+			cls._singleton = super(UIRoot, cls).__new__(cls)
+		return cls._singleton
+
+	def __init__(self, name="root", **kwargs):
+		kwargs.pop("root", None)
+		self.root = Tk()
+		UIFrame.__init__(self, root=self.root, name=name, **kwargs)
+
+	def MainLoop(self):
+		self.root.mainloop()
+
 #http://effbot.org/tkinterbook/label.htm
 class UILabel(UIElement, M_Text):
 	def __init__(self, text='', name=None, **kwargs):
 		UIElement.__init__(self, name=name)
-		self.type = ElementType.HAS_TEXT
 		M_Text.__init__(self, text)
 		kwargs.pop("textvariable", None) #we use our own textvariable
 		self.kwargs = kwargs
@@ -194,6 +211,7 @@ class UILabel(UIElement, M_Text):
 		kwargs.pop("textvariable", None) #we use our own textvariable
 		self.kwargs.update(kwargs)
 		self.label = Label(frame, textvariable=self.text, **self.kwargs)
+		self.side = push
 		self.label.pack(side=push)
 		
 	def _Show(self):
@@ -210,7 +228,7 @@ class UIButton(UIElement, M_Text):
 	def __init__(self, action, data=None, text='', name=None, **kwargs):
 		UIElement.__init__(self, name=name)
 		M_Text.__init__(self, text)
-		self.type = ElementType.HAS_TEXT | ElementType.HAS_ACTION
+		self.type |= ElementType.HAS_ACTION
 		kwargs.pop("command", None) #action replaces command
 		kwargs.pop("textvariable", None) #we use our own textvariable
 		self.kwargs = kwargs
@@ -235,10 +253,11 @@ class UIButton(UIElement, M_Text):
 		kwargs.pop("textvariable", None) #we use our own textvariable
 		self.kwargs.update(kwargs)
 		self.button = Button(frame, command=self._Command, textvariable=self.text, **self.kwargs)
+		self.side = push
 		self.button.pack(side=push)
 
 	def _Show(self):
-		self.button.pack()
+		self.button.pack(side=self.side)
 
 	def _Hide(self):
 		self.button.pack_forget()
@@ -249,17 +268,81 @@ class UIButton(UIElement, M_Text):
 	def __str__(self):
 		return "Button: " + self.text.get() #because self.text is StringVar not string
 
-def _ElementalLogWrapper(cls, func):
+def _EnterPressed(self):
+		self._Command()
+
+class UIButtonPair(UIElement):
+	def __init__(self, name=None, **kwargs):
+		UIElement.__init__(self, name=name)
+		self.type = ElementType.NONE
+		kwargs.pop("root", None)
+		self.kwargs = kwargs
+
+	def Button1Action(self, data):
+		pass
+
+	def Button1Text(self):
+		return ""
+
+	def Button2Action(self, data):
+		pass
+
+	def Button2Text(self):
+		return ""
+
+	def _Place(self, frame, push=TOP, **kwargs):
+		self.kwargs.update(kwargs)
+		self.frame = UIFrame(kwargs)
+		self.frame._Place(frame, push=push, **kwargs)
+
+		self.button1 = UIButton(action=self.Button1Action, text=self.Button1Text())
+		self.button2 = UIButton(action=self.Button2Action, text=self.Button2Text())
+
+		self.frame.Add(self.button1, side=LEFT)
+		self.frame.Add(self.button2, side=LEFT)
+
+	def _Show(self):
+		self.frame._Show()
+
+	def _Hide(self):
+		self.frame._Hide()
+
+	def __str__(self):
+		return str(self.frame)
+
+class UIOkCancel(UIButtonPair):
+	def __init__(self, action, data=None, name=None, **kwargs):
+		self.action = action
+		self.data = data
+		kwargs.pop("action", None)
+		kwargs.pop("data", None)
+		UIButtonPair.__init__(self, name=name, **kwargs)
+
+	def Button1Action(self, data):
+		self.action(self.data)
+		self._Hide()
+
+	def Button1Text(self):
+		return "OK"
+
+	def Button2Action(self, data):
+		self._Hide()
+
+	def Button2Text(self):
+		return "Cancel"
+
+def _ElementLogWrapper(cls, func):
 	def wrapper(*args, **kwargs):
 		print("Created " + cls.__name__)
-		return func(*args, **kwargs)
+		return_value = func(*args, **kwargs)
+		return return_value
 	return wrapper
 
-_ElementLogginOn = False
+_ElementLoggingOn = False
 def TurnOnElementCreationLogging():
-	global _ElementLogginOn
-	if not _ElementLogginOn:
-		UIFrame.__init__ = _ElementalLogWrapper(UIFrame, UIFrame.__init__)
-		UILabel.__init__ = _ElementalLogWrapper(UILabel, UILabel.__init__)
-		UIButton.__init__ = _ElementalLogWrapper(UIButton, UIButton.__init__)
-		_ElementLogginOn = True
+	global _ElementLoggingOn
+	if not _ElementLoggingOn:
+		UIFrame.__init__ = _ElementLogWrapper(UIFrame, UIFrame.__init__)
+		UILabel.__init__ = _ElementLogWrapper(UILabel, UILabel.__init__)
+		UIButton.__init__ = _ElementLogWrapper(UIButton, UIButton.__init__)
+		_ElementLoggingOn = True
