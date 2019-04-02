@@ -268,8 +268,60 @@ class UIButton(UIElement, M_Text):
 	def __str__(self):
 		return "Button: " + self.text.get() #because self.text is StringVar not string
 
-def _EnterPressed(self):
-		self._Command()
+	def _EnterPressed(self):
+			self._Command()
+
+class UIRadioButton(UIButton):
+	def __init__(self, action, data=None, text='', name=None, **kwargs):
+		UIButton.__init__(self, action=action, data=data, text=text, name=name, **kwargs)
+
+	def _PreCopy(self, action=None, data=None, text=None, name=None):
+		self.newAction = self.action if action == None else action
+		self.newData = self.data if action == None else data
+		self.newText = self.text.get() if text == None else text
+		self.newName = self.name if name == None else name
+
+	def CopySelf(self, action=None, data=None, text=None, name=None, addToSameFrame=False, **override_args):
+		self._PreCopy(self, action, data, name)
+		myCopy = UIRadioButton(action=self.newAction, data=self.newData, text=self.newText,
+		                  name=self.newName, **self.kwargs)
+		override_args.pop("command", None)  # action replaces command
+		override_args.pop("textvariable", None)  # we use our own textvariable
+		myCopy.kwargs.update(override_args)
+		if addToSameFrame:
+			self.owner.Add(myCopy, self.side)
+		return myCopy
+
+	def _Place(self, frame, push=TOP, **kwargs):
+		kwargs.pop("command", None)  # action replaces command
+		kwargs.pop("textvariable", None)  # we use our own textvariable
+		self.kwargs.update(kwargs)
+		if not hasattr(frame, "radioVar"):
+			frame.radioVar = IntVar()
+			frame.radioIndex = 1
+		else:
+			frame.radioIndex += 1
+		self.myIndex = frame.radioIndex
+		self.button = Radiobutton(frame, command=self._Command, textvariable=self.text,
+									variable=frame.radioVar, value=frame.radioIndex, **self.kwargs)
+		self.side = push
+		self.button.pack(side=push)
+
+	def _Show(self):
+		self.button.pack(side=self.side, anchor=W)
+
+	def _Hide(self):
+		self.button.pack_forget()
+
+	def _Command(self):
+		if self.action != None:
+			self.action(self.data, self.myIndex)
+
+	def __str__(self):
+		return "Radio Button: " + self.text.get()  # because self.text is StringVar not string
+
+	def _EnterPressed(self):
+			pass
 
 class UIButtonPair(UIElement):
 	def __init__(self, name=None, **kwargs):
@@ -291,6 +343,7 @@ class UIButtonPair(UIElement):
 		return ""
 
 	def _Place(self, frame, push=TOP, **kwargs):
+		kwargs.pop("root", None)
 		self.kwargs.update(kwargs)
 		self.frame = UIFrame(kwargs)
 		self.frame._Place(frame, push=push, **kwargs)
@@ -314,19 +367,26 @@ class UIOkCancel(UIButtonPair):
 	def __init__(self, action, data=None, name=None, **kwargs):
 		self.action = action
 		self.data = data
+		self.hideElement = hideElement
 		kwargs.pop("action", None)
 		kwargs.pop("data", None)
 		UIButtonPair.__init__(self, name=name, **kwargs)
 
 	def Button1Action(self, data):
 		self.action(self.data)
-		self._Hide()
+		if self.hideElement != None:
+			self.hideElement._Hide()
+		else:
+			self._Hide()
 
 	def Button1Text(self):
 		return "OK"
 
 	def Button2Action(self, data):
-		self._Hide()
+		if self.hideElement != None:
+			self.hideElement._Hide()
+		else:
+			self._Hide()
 
 	def Button2Text(self):
 		return "Cancel"
