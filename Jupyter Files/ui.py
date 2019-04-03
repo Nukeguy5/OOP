@@ -235,11 +235,14 @@ class UIButton(UIElement, M_Text):
 		self.action = action
 		self.data = data
 		
+	def _PreCopy(self, action, data, text, name):
+		self.newAction = self.action if action == None else action
+		self.newData = self.data if action == None else data
+		self.newText = self.text.get() if text == None else text
+		self.newName = self.name if name == None else name
+
 	def CopySelf(self, action=None, data=None, text=None, name=None, addToSameFrame=False, **override_args):
-		newAction = self.action if action == None else action
-		newData = self.data if action == None else data
-		newText = self.text.get() if text == None else text
-		newName = self.name if name == None else name
+		self._PreCopy(self, action, data, text, name)
 		myCopy = UIButton(newAction, data=newData, text=newText, name=newName, **self.kwargs)
 		override_args.pop("command", None) #action replaces command
 		override_args.pop("textvariable", None) #we use our own textvariable
@@ -275,16 +278,9 @@ class UIRadioButton(UIButton):
 	def __init__(self, action, data=None, text='', name=None, **kwargs):
 		UIButton.__init__(self, action=action, data=data, text=text, name=name, **kwargs)
 
-	def _PreCopy(self, action=None, data=None, text=None, name=None):
-		self.newAction = self.action if action == None else action
-		self.newData = self.data if action == None else data
-		self.newText = self.text.get() if text == None else text
-		self.newName = self.name if name == None else name
-
 	def CopySelf(self, action=None, data=None, text=None, name=None, addToSameFrame=False, **override_args):
-		self._PreCopy(self, action, data, name)
-		myCopy = UIRadioButton(action=self.newAction, data=self.newData, text=self.newText,
-		                  name=self.newName, **self.kwargs)
+		self._PreCopy(action, data, text, name)
+		myCopy = UIRadioButton(action=self.newAction, data=self.newData, text=self.newText, name=self.newName, **self.kwargs)
 		override_args.pop("command", None)  # action replaces command
 		override_args.pop("textvariable", None)  # we use our own textvariable
 		myCopy.kwargs.update(override_args)
@@ -305,7 +301,7 @@ class UIRadioButton(UIButton):
 		self.button = Radiobutton(frame, command=self._Command, textvariable=self.text,
 									variable=frame.radioVar, value=frame.radioIndex, **self.kwargs)
 		self.side = push
-		self.button.pack(side=push)
+		self.button.pack(side=push, anchor=W)
 
 	def _Show(self):
 		self.button.pack(side=self.side, anchor=W)
@@ -345,7 +341,7 @@ class UIButtonPair(UIElement):
 	def _Place(self, frame, push=TOP, **kwargs):
 		kwargs.pop("root", None)
 		self.kwargs.update(kwargs)
-		self.frame = UIFrame(kwargs)
+		self.frame = UIFrame(**kwargs)
 		self.frame._Place(frame, push=push, **kwargs)
 
 		self.button1 = UIButton(action=self.Button1Action, text=self.Button1Text())
