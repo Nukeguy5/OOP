@@ -223,6 +223,30 @@ class UILabel(UIElement, M_Text):
 	def __str__(self):
 		return "Label: " + self.text.get() #because self.text is StringVar not string
 
+# http://effbot.org/tkinterbook/canvas.htm
+class UIImage(UIElement):
+	def __init__(self, path, name=None, **kwargs):
+		UIElement.__init__(self, name=name)
+		self.kwargs = kwargs
+		self.path = path
+		self.photo = PhotoImage(file=path)
+
+	def _Place(self, frame, push=TOP, **kwargs):
+		self.kwargs.update(kwargs)
+		self.image = Canvas(master=frame, width=self.photo.width(), height=self.photo.height(), **self.kwargs)
+		self.side = push
+		self.image.pack(side=push)
+		self.imageID = self.image.create_image(0, 0, image=self.photo, anchor=NW)
+
+	def _Show(self):
+		self.image.pack(side=self.side)
+
+	def _Hide(self):
+		self.image.pack_forget()
+
+	def __str__(self):
+		return "Image: " + self.path
+		
 #http://effbot.org/tkinterbook/button.htm
 class UIButton(UIElement, M_Text):
 	def __init__(self, action, data=None, text='', name=None, **kwargs):
@@ -243,7 +267,7 @@ class UIButton(UIElement, M_Text):
 
 	def CopySelf(self, action=None, data=None, text=None, name=None, addToSameFrame=False, **override_args):
 		self._PreCopy(self, action, data, text, name)
-		myCopy = UIButton(newAction, data=newData, text=newText, name=newName, **self.kwargs)
+		myCopy = UIButton(self.newAction, data=self.newData, text=self.newText, name=self.newName, **self.kwargs)
 		override_args.pop("command", None) #action replaces command
 		override_args.pop("textvariable", None) #we use our own textvariable
 		myCopy.kwargs.update(override_args)
