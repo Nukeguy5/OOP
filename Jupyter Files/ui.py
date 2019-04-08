@@ -16,6 +16,7 @@ class ElementType(Flag):
 
 class UIElement(ABC):
 	UILanguage = LanguageType.ENGLISH
+	_ImageDict = {}
 
 	def __init__(self, name=None):
 		self.name = name
@@ -27,6 +28,14 @@ class UIElement(ABC):
 	@abstractmethod
 	def __str__(self):
 		pass
+
+	@classmethod
+	def LoadImage(cls, path):
+		if path in cls._ImageDict:
+			return cls._ImageDict[path]
+		image = PhotoImage(file=path)
+		cls._ImageDict[path] = image
+		return image
 
 class M_Text:
 	def SetText(self, text):
@@ -192,6 +201,7 @@ class UIRoot(UIFrame):
 		return cls._singleton
 
 	def __init__(self, name="root", **kwargs):
+		UIElement._ImageDict.clear()  # ensures _ImageDict is cleaned up
 		kwargs.pop("root", None)
 		self.root = Tk()
 		UIFrame.__init__(self, root=self.root, name=name, **kwargs)
