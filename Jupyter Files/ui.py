@@ -14,6 +14,34 @@ class ElementType(Flag):
 	HAS_ACTION = 2
 	IS_CONTAINER = 4
 
+class UIMessage:
+	_Messages = {}
+
+	def __init__(self, newText=None, newImage=None):
+		if newText is not None:
+			self.newText = newText
+		if newImage is not None:
+			self.newImage = newImage
+
+	def ButtonCallback(self, target):
+		UIMessage.SendMessage(target, self)
+
+	@classmethod
+	def SendMessage(cls, targetName, message):
+		target = cls._Messages.get(targetName)
+		if target:
+			cls._Messages[targetName].append(message)
+		else:
+			cls._Messages[targetName] = [message]
+		
+	@classmethod
+	def ProcessMessages(cls):
+		for name, messageList in cls._Messages.items():
+			for element in UIRoot._singleton.FindEachElementByName(name):
+				for message in messageList:
+					element._ProcessMessage(message)
+		cls._Messages.clear()
+
 class UIElement(ABC):
 	UILanguage = LanguageType.ENGLISH
 	_ImageDict = {}
@@ -110,6 +138,9 @@ class UIFrame(UIElement):
 		self.frame = Frame(frame, **self.kwargs)
 		self.side = push
 		self.frame.pack(side=push)
+
+	def _ProcessMessage(self, message):
+		pass
 		
 	def _Show(self):
 		self.frame.pack(side=self.side)
@@ -206,7 +237,12 @@ class UIRoot(UIFrame):
 		self.root = Tk()
 		UIFrame.__init__(self, root=self.root, name=name, **kwargs)
 
+	def _Update(self):
+		UIMessage.ProcessMessages()
+		self.root.after(100, self._Update)
+
 	def MainLoop(self):
+		self.root.after(100, self._Update)
 		self.root.mainloop()
 
 #http://effbot.org/tkinterbook/label.htm
@@ -223,6 +259,10 @@ class UILabel(UIElement, M_Text):
 		self.label = Label(frame, textvariable=self.text, **self.kwargs)
 		self.side = push
 		self.label.pack(side=push)
+
+	def _ProcessMessage(self, message):
+		if hasattr(message, "newText"):
+			self.SetText(message.newText)
 		
 	def _Show(self):
 		self.label.pack(side=self.side)
@@ -247,6 +287,12 @@ class UIImage(UIElement):
 		self.side = push
 		self.image.pack(side=push)
 		self.imageID = self.image.create_image(0, 0, image=self.photo, anchor=NW)
+
+	def _ProcessMessage(self, message):
+		if hasattr(message, "newImage"):
+			self.photo = UIElement.LoadImage(message.newImage)
+			self.image.config(width=self.photo.width(), height=self.photo.height())
+			self.image.itemconfig(self, image=self.photo)
 
 	def _Show(self):
 		self.image.pack(side=self.side)
@@ -293,6 +339,10 @@ class UIButton(UIElement, M_Text):
 		self.side = push
 		self.button.pack(side=push)
 
+	def _ProcessMessage(self, message):
+		if hasattr(message, "newText"):
+			self.SetText(message.newText)
+
 	def _Show(self):
 		self.button.pack(side=self.side)
 
@@ -336,6 +386,10 @@ class UIRadioButton(UIButton):
 									variable=frame.radioVar, value=frame.radioIndex, **self.kwargs)
 		self.side = push
 		self.button.pack(side=push, anchor=W)
+
+	def _ProcessMessage(self, message):
+		if hasattr(message, "newText"):
+			self.SetText(message.newText)
 
 	def _Show(self):
 		self.button.pack(side=self.side, anchor=W)
